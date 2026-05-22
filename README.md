@@ -28,19 +28,16 @@ deepEssay 项目的外层仓库，存放架构文档、功能展示截图与 Tok
 - **消息持久化** — 基于 libSQL 的完整对话历史存储
 - **多通道支持** — Tauri IPC (前端 SSE) + CLI REPL 双通道架构
 
+### 源码统计
+
+Rust 后端 `backend/src/` 下的源码统计：
+
+- 文件数：82 个 `.rs` 文件
+- 代码行数：10,814 行
+
 ## 功能展示
 
 ![功能展示](function/功能展示.png)
-
-## Token 消耗
-
-### 2026年4月
-
-![4月Token消耗](token_consumption/4月token消耗.png)
-
-### 2026年5月
-
-![5月Token消耗](token_consumption/5月token消耗.png)
 
 ## 本仓库结构
 
@@ -121,3 +118,15 @@ deepEssayOuter/
 待完成功能包括：审批流程 (Approval)、上下文压缩、多 LLM Provider 支持、前端剩余页面完善、ToolCall 可视化等。
 
 完整清单详见 [architecture.md 第14节](docs/architecture.md#14-当前开发状态-2026-05-22)。
+
+## Token 消耗
+
+### 2026年4月
+
+![4月Token消耗](token_consumption/4月token消耗.png)
+
+### 2026年5月
+
+![5月Token消耗](token_consumption/5月token消耗.png)
+
+总 Token 消耗 2 亿+。
