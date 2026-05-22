@@ -28,6 +28,20 @@ deepEssay 项目的外层仓库，存放架构文档、功能展示截图与 Tok
 - **消息持久化** — 基于 libSQL 的完整对话历史存储
 - **多通道支持** — Tauri IPC (前端 SSE) + CLI REPL 双通道架构
 
+## 功能展示
+
+![功能展示](function/功能展示.png)
+
+## Token 消耗
+
+### 2026年4月
+
+![4月Token消耗](token_consumption/4月token消耗.png)
+
+### 2026年5月
+
+![5月Token消耗](token_consumption/5月token消耗.png)
+
 ## 本仓库结构
 
 ```
@@ -45,21 +59,65 @@ deepEssayOuter/
 ## 架构概览
 
 ```
-前端 (Vue 3) ──Tauri IPC──▶ GatewayChannel ──▶ Agent Loop
-                                                  │
-                                          Session Manager
-                                                  │
-                                          Agentic Loop
-                                          ├── LLM Reasoning
-                                          └── Tool Execution
-                                                  │
-                                          Database (libSQL)
+┌──────────────────────────────────────────────────────────────────────┐
+│                            Channels                                 │
+│  ┌──────────┐              ┌─────────────────┐                      │
+│  │   REPL   │              │  Web Gateway    │                      │
+│  │(Terminal)│              │ (Tauri IPC+SSE) │                      │
+│  └────┬─────┘              └────────┬────────┘                      │
+│       └────────────┬───────────────┘                                │
+│                    │                                                │
+│          ┌─────────▼─────────┐                                      │
+│          │    Agent Loop     │  SubmissionParser                    │
+│          │  (handle_message) │  Intent routing                     │
+│          └────────┬──────────┘                                      │
+│                   │                                                 │
+│          ┌────────▼────────┐                                       │
+│          │Session Manager  │                                       │
+│          │ Sessions/Threads│                                       │
+│          └────────┬────────┘                                       │
+│                   │                                                 │
+│          ┌────────▼──────────────────────────┐                     │
+│          │         Agentic Loop              │                     │
+│          │  ┌─────────────────────────────┐  │                     │
+│          │  │ Reasoning ─── LLM Provider  │  │  ← Skills 注入      │
+│          │  │   (respond_with_tools)      │  │    上下文           │
+│          │  └─────────────┬───────────────┘  │                     │
+│          │                │                  │                     │
+│          │  ┌─────────────▼───────────────┐  │                     │
+│          │  │     Tool Execution          │  │  ← Hooks 拦截       │
+│          │  │  run_one_tool / JoinSet     │  │    (BeforeToolCall) │
+│          │  └─────────────────────────────┘  │                     │
+│          └────────┬──────────────────────────┘                     │
+│                   │                                                 │
+│  ┌────────────────┼──────────────────┐                             │
+│  │                │                  │                             │
+│  │     ┌──────────▼────┐  ┌─────────▼─────────┐                    │
+│  │     │Skills Registry│  │  Hooks Registry   │                    │
+│  │     │  (SKILL.md)   │  │(6 lifecycle pts)  │                    │
+│  │     └───────────────┘  └───────────────────┘                    │
+│  └─────────────────────────────────────────────────────────────────┘│
+│                   │                                                 │
+│          ┌────────▼────────┐                                       │
+│          │  Tool Registry  │                                       │
+│          │  (Built-in:     │                                       │
+│          │  Essay Topic    │                                       │
+│          │  + Student)     │                                       │
+│          └────────┬────────┘                                       │
+│                   │                                                 │
+│          ┌────────▼────────┐                                       │
+│          │    Database     │                                       │
+│          │    (libSQL)     │                                       │
+│          └─────────────────┘                                       │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
-详细架构请参阅 [docs/architecture.md](docs/architecture.md) 与 [docs/architecture_simplified.md](docs/architecture_simplified.md)。
+详细架构请参阅 [docs/architecture_simplified.md](docs/architecture_simplified.md) 与 [docs/architecture.md](docs/architecture.md)。
 
 ## 开发状态
 
-当前版本已完成核心流程：Tauri 2 框架初始化、LLM Provider 抽象层、Agent 主循环与会话管理、Agentic Loop (LLM ↔ Tool 多轮交互)、工具/技能/钩子系统、消息持久化、前端聊天界面。
+核心链路已贯通：前端聊天界面 → Tauri IPC 通道 → Agent 消息分发 → Session 管理 → Agentic Loop 多轮推理 → LLM 调用 → 工具执行 → 响应渲染 (Markdown)。配套的持久化 (libSQL)、技能系统 (SKILL.md)、钩子系统 (6 个生命周期节点) 也已完成。
 
-待完成功能详见 [architecture.md 第14节](docs/architecture.md#14-当前开发状态-2026-05-22)。
+待完成功能包括：审批流程 (Approval)、上下文压缩、多 LLM Provider 支持、前端剩余页面完善、ToolCall 可视化等。
+
+完整清单详见 [architecture.md 第14节](docs/architecture.md#14-当前开发状态-2026-05-22)。
