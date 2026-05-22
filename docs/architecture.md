@@ -153,7 +153,7 @@ run_agentic_loop()  ← 单次消息处理
         └── after_iteration()
 ```
 
-### 3.4 线程状态机
+### 3.4 Thread状态机
 
 ```
 ThreadState:
