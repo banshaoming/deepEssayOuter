@@ -77,9 +77,6 @@
 - `SystemCommand` → `/help` 等系统命令
 - `Interrupt` → 中断当前处理
 
-> 对比参考图：参考图在 Agent Loop 后分为 Scheduler（并行任务调度）和 Routines Engine（定时/事件触发），deepEssay 目前只有 Chat
-> 交互路径，这两个分支尚未实现。
-
 ### Session Manager（会话管理）
 
 管理 `Session → Thread → Turn` 三层结构：
