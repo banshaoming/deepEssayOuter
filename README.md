@@ -121,6 +121,8 @@ deepEssayOuter/
 
 ## Token 消耗
 
+总 Token 消耗 2 亿+
+
 ### 2026年4月
 
 ![4月Token消耗](token_consumption/4月token消耗.png)
@@ -129,4 +131,3 @@ deepEssayOuter/
 
 ![5月Token消耗](token_consumption/5月token消耗.png)
 
-总 Token 消耗 2 亿+。
